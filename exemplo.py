@@ -62,9 +62,33 @@ def payout(par, tipo, timeframe = 1):
 		return d
 
  
+
+#Pegar historico de trading
+status, historico = API.get_position_history_v2('turbo-option', 3, 0, 0, 0 )
+'''
+FINAL OPERACAO: close_time
+INICIO OPERACAO: open_time
+LUCRO: close_profit
+ENTRADA: invest
+
+--raw_event
+PARIDADE: instrument_underlying / TURBO: active
+DIRECAO: instrument_dir / TURBO: direction
+VALOR: buy_amount
+
+
+'''
+
+for x in historico['positions']:
+	print('PAR: ' +str(x['raw_event']['instrument_underlying'])+' / '+'DIRECAO: '+str(x['raw_event']['instrument_dir'])+' / '+'VALOR: '+str(x['raw_event']['buy_amount']))
+	print('LUCRO: '+str(x['close_profit'] if x['close_profit'] == 0 else round(x['close_profit']-x['invest'], 2) )+' / '+'INICIO OP: '+str(timestamp_converter(x['open_time'] / 1000))+' / '+'FINAL OP: '+str(timestamp_converter(x['close_time'] / 1000)))
+	print('\n')
+	
+	
+
 #retornar pares que estão abertas no momento
-par = API.get_all_open_time()
-'''print(par)'''
+'''par = API.get_all_open_time()
+print(par)
 for paridade in par['turbo']:
 	if par['turbo'][paridade]['open'] == True:
 		print('[ TURBO ]: ' + paridade+ '| Payout: '+ str(payout(paridade, 'turbo')))
@@ -74,9 +98,9 @@ for paridade in par['digital']:
 	if par['digital'][paridade]['open'] == True:
 		print('[ DIGITAL ]: ' + paridade+ '| Payout: '+ str(payout(paridade, 'digital')))
 	print('\n')
-'''def banca():'''
-'''print(API.get_balance())'''
-
+def banca():
+print(API.get_balance())
+'''
 #par = "BTCUSD"
 #Retorna o humor dos traders
 
